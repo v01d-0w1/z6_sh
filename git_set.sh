@@ -4,14 +4,14 @@ echo "create <1> or update <2>"
 
 read -p "choose:" state
 
-echo "path of the repo"
+echo "path of the repo(home/z6/your path)"
 read path
 
 if [ $state = 1 ]; then
 
     echo "url"
     read url
-    cd $path
+    cd /home/z6/$path
     git init
     git add .
     git commit -m "Initial commit"
@@ -20,7 +20,7 @@ if [ $state = 1 ]; then
 
 elif [ $state = 2 ]; then
 
-    cd $path
+    cd /home/z6/$path
     git add . 
     git commit -m "initial"
     git push -u origin main
