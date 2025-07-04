@@ -35,4 +35,4 @@ kitty &
 sleep 0.4
 kitty --class=kitty -e cava &
 sleep 0.4
-kitty --class=kitty -e ~/.config/i3/scripts/play_media.sh &
+kitty --class=kitty -e ~/.config/i3/scripts/play_media.sh 
