@@ -1,11 +1,11 @@
 #!/bin/bash
 
-cp -r ~/.config/i3/* ~/z3
-cp -r ~/.config/qutebrowser/* ~/zute/
-cp -r ~/.config/nvim/* ~/zvim/
-cp -r ~/.tmux* ~/z_mux/
-cp -r ~/.config/polybar/* ~/zpoly/
-cp -r ~/.config/bat/* ~/zbat/
+sudo cp -r ~/.config/i3/* ~/z3
+sudo cp -r ~/.config/qutebrowser/* ~/zute/
+sudo cp -r ~/.config/nvim/* ~/zvim/
+sudo cp -r ~/.tmux* ~/z_mux/
+sudo cp -r ~/.config/polybar/* ~/zpoly/
+sudo cp -r ~/.config/bat/* ~/zbat/
 
 git_update(){
     path=$1
