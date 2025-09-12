@@ -5,4 +5,4 @@ read url
 
 cd ~/Music/
 ~/app/yt-dlp_linux $url
-~/mp4_to_mp3.sh
+~/z6_sh/mp4_to_mp3.sh
