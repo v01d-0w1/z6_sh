@@ -12,18 +12,18 @@ if [ $state = 1 ]; then
     echo "url"
     read url
     cd /home/z6/$path
-    git init
-    git add .
-    git commit -m "Initial commit"
-    git remote add origin $url
-    git push -u origin main
+    sudo git init
+    sudo    git add .
+    sudo     git commit -m "Main"
+    sudo     git remote add origin $url
+    sudo     git push -u origin main
 
 elif [ $state = 2 ]; then
 
     cd /home/z6/$path
-    git add . 
-    git commit -m "initial"
-    git push -u origin main
+    sudo     git add . 
+    sudo     git commit -m "Main"
+    sudo     git push -u origin main
 else
     echo "wrong input"
 fi
