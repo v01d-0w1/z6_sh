@@ -11,7 +11,7 @@ echo "repo_url: $repo"
 cd "$path" || { echo "Error: Directory '$path' not found."; exit 1; }
 
 # Set global Git config (optional – remove if already configured)
-git config --global user.name "z6death"
+git config --global user.name "v01d-0w1"
 git config --global user.email "tnz426.z6@gmail.com"
 
 # Initialize Git if not already initialized
