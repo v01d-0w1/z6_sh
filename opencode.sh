@@ -1,20 +1,33 @@
 #!/bin/bash
 
+echo "availabel project/directory:"
+echo "============================"
+ls -1 ~/opencode/
+
+echo " "
 read -p "project directory (~/opencode/): " requestedDir
 
-ls ~/opencode/ | presentDir=()
+presentDir=($(ls  ~/opencode/))
+found=false
 
-for Dirloop in "${present-dir[@]}"; do
-    if [ $Dirloop == requestedDir ]; then
-        cd ~/opencode/requestedDir
-    else
-        read -p "do you want to create the directory (y/n): " choice
-        if [ $choice == "y" ]; then
-            mkdir ~/opencode/$requestedDir
-            cd ~/opencode/$requestedDir
-        fi
+for Dirloop in "${presentDir[@]}"; do
+    if [ "$Dirloop" == "$requestedDir" ]; then
+        found=true
+        break
     fi
 done
+
+if [ "$found" == true ]; then
+    cd ~/opencode/"$requestedDir"
+else
+    read -p "do you want to create the directory (y/n): " choose
+    if [ "$choose" = "y" ]; then
+        mkdir ~/opencode/"$requestedDir"
+    fi
+fi
+
+cd ~/opencode/"$requestedDir"
+
 pwd
 
-opencode
+/home/linuxbrew/.linuxbrew/bin/opencode
