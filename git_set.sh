@@ -27,7 +27,7 @@ if [ $state = 1 ]; then
 
 elif [ $state = 2 ]; then
     cd /home/z6/$path
-    
+    git add .    
     git commit -m "Initial commit"
 
     # Check current branch and use appropriate name
