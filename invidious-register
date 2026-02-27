@@ -1,0 +1,23 @@
+#!/bin/bash
+
+cd ~/invidious
+
+if ! curl -s http://localhost:21742 > /dev/null 2>&1; then
+    docker compose -f docker-compose.register.yml up -d
+    sleep 5
+fi
+
+while true; do
+    read -rp 'User ID (q to quit): ' ID
+    [ "$ID" = "q" ] && break
+    
+    read -rsp 'Password: ' PASS
+    echo
+
+    curl -s -L 'http://localhost:21742/login' \
+        --form-string "email=$ID" \
+        --form-string "password=$PASS" \
+        -F 'action=register' > /dev/null
+
+    echo "Registered: $ID"
+done

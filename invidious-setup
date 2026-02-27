@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "Setting up invidious-register service..."
+
+sudo mkdir -p /etc/sv/invidious-register
+sudo cp ~/invidious/invidious-register/run /etc/sv/invidious-register/run
+sudo chmod +x /etc/sv/invidious-register/run
+
+sudo rm -f /var/service/invidious-register
+sudo ln -s /etc/sv/invidious-register /var/service/
+
+sudo sv start invidious-register
+
+echo "Done! Run '/home/z6/z6_sh/invidious-register' to create users"
