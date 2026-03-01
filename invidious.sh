@@ -8,12 +8,12 @@ if docker compose ps --format json 2>/dev/null | grep -q '"Name":.*invidious.*"S
     notify-send "Invidious" "Stopped" -t 1000
 else
     # Start Invidious
-    sudo docker compose up -d
+    sudo docker compose down
+    sudo docker compose up & (setsid qutebrowser http://localhost:3000 >/dev/null 2>&1 &)
     notify-send "Invidious" "Starting..." -t 1000
     sleep 3
     
     # Launch qutebrowser in a completely detached way
-    (setsid qutebrowser http://localhost:3000 >/dev/null 2>&1 &)
 fi
 
 # Give it a moment to launch
