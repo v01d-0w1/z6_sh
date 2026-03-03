@@ -30,7 +30,6 @@ usage() {
 }
 
 get_current_theme() {
-    # Check a known symlink to determine current theme
     local link="$INSTALL_DIR/nvim/colors/zet/colors/zet.lua"
     if [[ -L "$link" ]]; then
         local target="$(readlink -f "$link")"
@@ -48,7 +47,6 @@ link_or_copy() {
     local src="$1"
     local dest="$2"
     
-    # Create parent directory if it doesn't exist
     mkdir -p "$(dirname "$dest")"
     
     if [[ -L "$dest" ]]; then
@@ -67,12 +65,13 @@ apply_theme() {
 
     # Kitty
     link_or_copy "$src_dir/theme.conf" "$INSTALL_DIR/kitty/theme.conf"
+    cp "$src_dir/tabs.conf" "$INSTALL_DIR/kitty/tabs.conf"
 
     # Qutebrowser CSS
     link_or_copy "$src_dir/green-black.css" "$INSTALL_DIR/qutebrowser/green-black.css"
 
-    # Qutebrowser config (all workspaces)
-    cp "$src_dir/qutebrowser-config.py" "$INSTALL_DIR/qutebrowser/config/config.py"
+    # Qutebrowser config (all workspaces + main)
+    cp "$src_dir/qutebrowser-config.py" "$INSTALL_DIR/qutebrowser/config.py"
     cp "$src_dir/qutebrowser-config.py" "$INSTALL_DIR/qutebrowser/workspace/hacking/config/config.py"
     cp "$src_dir/qutebrowser-config.py" "$INSTALL_DIR/qutebrowser/workspace/study/config/config.py"
     cp "$src_dir/qutebrowser-config.py" "$INSTALL_DIR/qutebrowser/workspace/z6/config/config.py"
@@ -80,16 +79,16 @@ apply_theme() {
     # Bat
     link_or_copy "$src_dir/z6.tmTheme" "$INSTALL_DIR/bat/themes/z6/z6.tmTheme"
 
-    # Neovim
-    link_or_copy "$src_dir/zet.lua" "$INSTALL_DIR/nvim/colors/zet/colors/zet.lua"
-    link_or_copy "$src_dir/zet.lua" "$INSTALL_DIR/nvim/colors/zet/lua/lush_theme/zet.lua"
-
-    # Neovim Lualine
-    cp "$src_dir/lualine.lua" "$INSTALL_DIR/nvim/lua/plugins/lualine.lua"
-    local lualine_theme="zet"
+    # Neovim - copy correct lush theme based on theme
+    cp "/home/z6/opencode/theme/nvim/colors/zet/colors/zet.lua" "$INSTALL_DIR/nvim/colors/zet/colors/zet.lua"
+    local nvim_lush="zet"
+    local nvim_lush_file="zet.lua"
     if [[ "$theme" == "mono" ]]; then
-        lualine_theme="zet-mono"
+        nvim_lush="zet-mono"
+        nvim_lush_file="zet-mono.lua"
     fi
+    cp "/home/z6/opencode/theme/nvim/colors/$nvim_lush/lua/lush_theme/$nvim_lush_file" "$INSTALL_DIR/nvim/colors/zet/lua/lush_theme/zet.lua"
+    cp "$src_dir/lualine.lua" "$INSTALL_DIR/nvim/lua/plugins/lualine.lua"
     cp "/home/z6/opencode/theme/themes/$theme/lualine-theme.lua" "$INSTALL_DIR/nvim/lua/lualine/themes/zet.lua"
 
     # i3
@@ -108,34 +107,47 @@ apply_theme() {
     fi
     link_or_copy "/home/z6/opencode/theme/polybar/cuts/colors-${polybar_color}.ini" "$INSTALL_DIR/polybar/cuts/colors.ini"
 
-    # Oh My Posh (~/.themes/z6.omp.json)
+    # Oh My Posh
     link_or_copy "$src_dir/z6.omp.json" "$HOME/.themes/z6.omp.json"
 
-    # Spinner (virt spinner)
+    # Spinner
     local spinner_name="green-spinner.sh"
     if [[ "$theme" == "mono" ]]; then
         spinner_name="mono-spinner.sh"
     fi
     link_or_copy "$THEME_DIR/$theme/$spinner_name" "$HOME/app/spiner.sh"
 
+    # GTK Cursor theme
+    mkdir -p "$HOME/.config/gtk-3.0"
+    local cursor_theme="Hackerer"
+    if [[ "$theme" == "mono" ]]; then
+        cursor_theme="Simp1e-Dark"
+    fi
+    sed -i "s/^gtk-cursor-theme-name=.*/gtk-cursor-theme-name=$cursor_theme/" "$HOME/.config/gtk-3.0/settings.ini"
+    
+    # Update GTK icon and theme as well
+    local gtk_theme="Hackerer1.1"
+    local gtk_icon="Dedicated to Hackerer1.1"
+    if [[ "$theme" == "mono" ]]; then
+        gtk_theme="WhiteSur-dark"
+        gtk_icon="WhiteSur-dark"
+    fi
+    sed -i "s/^gtk-theme-name=.*/gtk-theme-name=$gtk_theme/" "$HOME/.config/gtk-3.0/settings.ini"
+    sed -i "s/^gtk-icon-theme-name=.*/gtk-icon-theme-name=$gtk_icon/" "$HOME/.config/gtk-3.0/settings.ini"
+
     echo "$theme theme applied!"
     echo ""
     echo "Restarting programs to apply changes..."
     
-    # Restart i3 to apply config and wallpaper
     i3-msg reload
     
-    # Restart polybar
     pkill -f polybar || true
     ~/.config/polybar/launch.sh --cuts &
     
-    # Restart qutebrowser
-    pkill -f qutebrowser || true
-
-    # Restart nvim (send :LvimReloadCmd if running)
+    pkill -9 -f qutebrowser 2>/dev/null || true
+    
     nvim --headless +":LvimReload" +q 2>/dev/null || true
 
-    # Reload tmux config
     tmux source-file ~/.tmux.conf 2>/dev/null || true
     
     echo "Done! Please restart any remaining programs manually."
